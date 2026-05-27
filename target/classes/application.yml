@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://159.112.142.234:5432/MathBot_db
+    username: zylo_user
+    password: una_password_segura
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-change-me-change-me-change-me}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  fastapi:
+    chat-url: ${FASTAPI_CHAT_URL:http://127.0.0.1:8000/api/chat}
+    start-url: ${FASTAPI_START_URL:http://127.0.0.1:8000/api/chat/start}
+    history-url: ${FASTAPI_HISTORY_URL:http://127.0.0.1:8000/api/history}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
