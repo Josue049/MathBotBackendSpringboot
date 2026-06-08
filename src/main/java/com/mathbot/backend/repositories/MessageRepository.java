@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.repositories;
+package com.mathbot.backend.repositories;
 
 import com.mathbot.backend.models.entity.Message;
 import java.util.List;

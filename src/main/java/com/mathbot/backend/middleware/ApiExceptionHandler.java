@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.middleware;
+package com.mathbot.backend.middleware;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

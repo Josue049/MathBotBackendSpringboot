@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.models.entity;
+package com.mathbot.backend.models.entity;
 
 public enum Role {
     ROLE_USER,

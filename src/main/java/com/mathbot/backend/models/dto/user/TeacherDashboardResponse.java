@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.models.dto.user;
+package com.mathbot.backend.models.dto.user;
 
 import java.util.List;
 

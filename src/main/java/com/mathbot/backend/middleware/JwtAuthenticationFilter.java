@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.middleware;
+package com.mathbot.backend.middleware;
 
 import com.mathbot.backend.services.CustomUserDetailsService;
 import com.mathbot.backend.services.JwtService;

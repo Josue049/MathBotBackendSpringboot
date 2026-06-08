@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.services;
+package com.mathbot.backend.services;
 
 import com.mathbot.backend.models.entity.User;
 import com.mathbot.backend.repositories.UserRepository;

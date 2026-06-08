@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.middleware;
+package com.mathbot.backend.middleware;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

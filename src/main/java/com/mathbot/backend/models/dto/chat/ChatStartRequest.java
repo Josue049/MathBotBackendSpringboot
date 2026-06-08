@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.models.dto.chat;
+package com.mathbot.backend.models.dto.chat;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

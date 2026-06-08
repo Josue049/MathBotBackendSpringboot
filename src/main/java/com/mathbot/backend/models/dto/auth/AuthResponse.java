@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.models.dto.auth;
+package com.mathbot.backend.models.dto.auth;
 
 import com.mathbot.backend.models.dto.user.UserResponse;
 

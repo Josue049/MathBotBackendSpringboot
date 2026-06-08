@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.controllers;
+package com.mathbot.backend.controllers;
 
 import com.mathbot.backend.models.dto.chat.ChatConversationResponse;
 import com.mathbot.backend.models.dto.chat.ChatHistoryResponse;

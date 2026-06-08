@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.models.dto.user;
+package com.mathbot.backend.models.dto.user;
 
 public record TeacherStudentStats(
         Long id,

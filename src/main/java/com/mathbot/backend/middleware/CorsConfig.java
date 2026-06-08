@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.middleware;
+package com.mathbot.backend.middleware;
 
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;

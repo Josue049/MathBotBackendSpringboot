@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.integrations;
+package com.mathbot.backend.integrations;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

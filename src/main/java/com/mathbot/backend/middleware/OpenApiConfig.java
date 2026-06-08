@@ -1,4 +1,4 @@
-﻿package com.mathbot.backend.middleware;
+package com.mathbot.backend.middleware;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
