@@ -1,0 +1,1 @@
+(vacío, reservado para .dump o .sql de respaldo)
