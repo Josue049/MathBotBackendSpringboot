@@ -6,6 +6,10 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://159.112.142.234:5432/MathBot_db}
     username: ${SPRING_DATASOURCE_USERNAME:zylo_user}
     password: ${SPRING_DATASOURCE_PASSWORD:una_password_segura}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,11 +28,17 @@ app:
   jwt:
     secret: ${JWT_SECRET:change-me-change-me-change-me-change-me}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  python-api:
+    url: "https://gemini-vision-two.vercel.app/analyze"
   groq:
     api-key: ${GROQ_API_KEY}
     base-url: ${GROQ_BASE_URL:https://api.groq.com/openai/v1}
     model: ${GROQ_MODEL:openai/gpt-oss-20b}
     temperature: ${GROQ_TEMPERATURE:0.4}
+  gemini:
+    api-key: ${GEMINI_API_KEY}
+    model: "gemini-3.5-flash"
+    base-url: "https://generativelanguage.googleapis.com/v1beta"
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:https://math-bot-frontend.vercel.app/,http://localhost:5173,http://127.0.0.1:5173}
 

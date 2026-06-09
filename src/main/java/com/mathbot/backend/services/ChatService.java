@@ -1,5 +1,7 @@
 package com.mathbot.backend.services;
 
+import com.mathbot.backend.integrations.GeminiVisionService;
+import com.mathbot.backend.integrations.GroqChatService;
 import com.mathbot.backend.models.dto.chat.ChatConversation;
 import com.mathbot.backend.models.dto.chat.ChatConversationResponse;
 import com.mathbot.backend.models.dto.chat.ChatHistoryItem;
@@ -9,10 +11,10 @@ import com.mathbot.backend.models.dto.chat.ChatRequest;
 import com.mathbot.backend.models.dto.chat.ChatResponse;
 import com.mathbot.backend.models.dto.chat.ChatStartRequest;
 import com.mathbot.backend.models.dto.chat.ChatStartResponse;
+import com.mathbot.backend.models.dto.chat.ChatVisionResponse;
 import com.mathbot.backend.models.entity.Conversation;
 import com.mathbot.backend.models.entity.ConversationType;
 import com.mathbot.backend.models.entity.Message;
-import com.mathbot.backend.integrations.GroqChatService;
 import com.mathbot.backend.repositories.ConversationRepository;
 import com.mathbot.backend.repositories.MessageRepository;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -33,21 +36,25 @@ public class ChatService {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final GroqChatService groqChatService;
+    private final GeminiVisionService geminiVisionService;
     private final AuthAccessService authAccessService;
 
     public ChatService(
             ConversationRepository conversationRepository,
             MessageRepository messageRepository,
             GroqChatService groqChatService,
+            GeminiVisionService geminiVisionService,
             AuthAccessService authAccessService) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.groqChatService = groqChatService;
+        this.geminiVisionService = geminiVisionService;
         this.authAccessService = authAccessService;
     }
 
     @Transactional
     public ChatStartResponse start(String username, ChatStartRequest request) {
+        authAccessService.assertCanUseChat(username);
         authAccessService.assertCanAccessUserData(username, request.userId());
 
         String first = request.firstMessage().trim();
@@ -70,6 +77,7 @@ public class ChatService {
 
     @Transactional
     public ChatResponse chat(String username, ChatRequest request) {
+        authAccessService.assertCanUseChat(username);
         authAccessService.assertCanAccessUserData(username, request.userId());
 
         String text = request.message().trim();
@@ -90,11 +98,61 @@ public class ChatService {
                 reply = "Lo siento, no pude responder ahora.";
             }
 
-            saveMessage(conversation.getId(), "user", text);
-            saveMessage(conversation.getId(), "assistant", reply);
+            saveMessage(conversation.getId(), "user", text, null);
+            saveMessage(conversation.getId(), "assistant", reply, null);
             touchConversation(conversation);
 
             return new ChatResponse(true, reply, conversation.getId());
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public ChatVisionResponse vision(String username, Long userId, Long conversationId, MultipartFile image) {
+        authAccessService.assertCanUseChat(username);
+        authAccessService.assertCanAccessUserData(username, userId);
+
+        if (image == null || image.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debes subir una imagen");
+        }
+
+        String contentType = image.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo debe ser una imagen");
+        }
+
+        try {
+            Conversation conversation;
+            if (conversationId != null) {
+                conversation = conversationRepository.findByIdAndUserId(conversationId, userId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Conversación no encontrada"));
+            } else {
+                conversation = new Conversation();
+                conversation.setUserId(userId);
+                conversation.setTitle("Ejercicio con foto");
+                conversation.setType(ConversationType.VISION);
+                conversation = conversationRepository.save(conversation);
+            }
+
+            String imageUrl = "imagen_subida";
+            List<Map<String, String>> memory = buildMemoryMessages(conversation.getId());
+            memory.add(Map.of("role", "system", "content", groqChatService.tutorSystemPrompt()));
+
+            String reply = geminiVisionService.analyzeExerciseImage(image, memory);
+            if (reply == null || reply.isBlank()) {
+                reply = "Revisé tu imagen, pero no pude generar una explicación clara. ¿Puedes intentar con otra foto?";
+            }
+
+            // Aquí es donde ocurría el error si 'reply' superaba los 512 caracteres en la BD
+            saveMessage(conversation.getId(), "user", "Subí una foto de mi ejercicio.", imageUrl);
+            saveMessage(conversation.getId(), "assistant", reply, null);
+            touchConversation(conversation);
+
+            return new ChatVisionResponse(true, conversation.getId(), reply, imageUrl);
         } catch (ResponseStatusException e) {
             throw e;
         } catch (Exception e) {
@@ -128,7 +186,7 @@ public class ChatService {
 
         List<Message> rows = messageRepository.findByConversationIdOrderByCreatedAtAsc(conversationId);
         List<ChatMessage> messages = rows.stream()
-                .map(row -> new ChatMessage(row.getRole(), row.getContent()))
+                .map(row -> new ChatMessage(row.getRole(), row.getContent(), row.getImageUrl()))
                 .toList();
 
         ChatConversation payload = new ChatConversation(
@@ -161,11 +219,12 @@ public class ChatService {
         return memory;
     }
 
-    private void saveMessage(Long conversationId, String role, String content) {
+    private void saveMessage(Long conversationId, String role, String content, String imageUrl) {
         Message message = new Message();
         message.setConversationId(conversationId);
         message.setRole(role);
         message.setContent(content);
+        message.setImageUrl(imageUrl);
         messageRepository.save(message);
     }
 

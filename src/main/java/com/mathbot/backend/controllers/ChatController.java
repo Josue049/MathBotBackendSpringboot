@@ -6,6 +6,7 @@ import com.mathbot.backend.models.dto.chat.ChatRequest;
 import com.mathbot.backend.models.dto.chat.ChatResponse;
 import com.mathbot.backend.models.dto.chat.ChatStartRequest;
 import com.mathbot.backend.models.dto.chat.ChatStartResponse;
+import com.mathbot.backend.models.dto.chat.ChatVisionResponse;
 import com.mathbot.backend.services.ChatService;
 import jakarta.validation.Valid;
 import org.springframework.lang.NonNull;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -52,5 +55,14 @@ public class ChatController {
             @PathVariable Long userId,
             @PathVariable Long conversationId) {
         return chatService.conversation(authentication.getName(), userId, conversationId);
+    }
+
+    @PostMapping(value = "/chat/vision", consumes = "multipart/form-data")
+    public ChatVisionResponse vision(
+            Authentication authentication,
+            @RequestParam Long userId,
+            @RequestParam(required = false) Long conversationId,
+            @RequestPart("image") MultipartFile image) {
+        return chatService.vision(authentication.getName(), userId, conversationId, image);
     }
 }

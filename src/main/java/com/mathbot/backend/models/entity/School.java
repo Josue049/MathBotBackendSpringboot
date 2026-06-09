@@ -10,24 +10,15 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "messages")
-public class Message {
+@Table(name = "schools")
+public class School {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long conversationId;
-
-    @Column(nullable = false)
-    private String role;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
-
-    @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    @Column(nullable = false, unique = true)
+    private String name;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -47,36 +38,12 @@ public class Message {
         this.id = id;
     }
 
-    public Long getConversationId() {
-        return conversationId;
+    public String getName() {
+        return name;
     }
 
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDateTime getCreatedAt() {
