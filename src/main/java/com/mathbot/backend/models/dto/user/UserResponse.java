@@ -13,5 +13,8 @@ public record UserResponse(
                 String usuario,
                 String avatar,
                 Long teacherId,
+                Long schoolId,
+                Long classroomId,
+                String classroomName,
                 String role) {
 }

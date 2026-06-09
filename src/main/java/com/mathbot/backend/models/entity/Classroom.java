@@ -10,24 +10,24 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "messages")
-public class Message {
+@Table(name = "classrooms")
+public class Classroom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Long conversationId;
+    private String name;
+
+    @Column(nullable = true)
+    private String grade;
 
     @Column(nullable = false)
-    private String role;
+    private Long teacherId;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
-
-    @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    @Column(nullable = false)
+    private Long schoolId;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -47,36 +47,36 @@ public class Message {
         this.id = id;
     }
 
-    public Long getConversationId() {
-        return conversationId;
+    public String getName() {
+        return name;
     }
 
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getRole() {
-        return role;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
-    public String getContent() {
-        return content;
+    public Long getTeacherId() {
+        return teacherId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Long getSchoolId() {
+        return schoolId;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setSchoolId(Long schoolId) {
+        this.schoolId = schoolId;
     }
 
     public LocalDateTime getCreatedAt() {

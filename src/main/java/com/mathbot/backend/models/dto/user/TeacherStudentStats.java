@@ -8,6 +8,8 @@ public record TeacherStudentStats(
         String avatar,
         String institution,
         Long teacherId,
+        Long classroomId,
+        String classroomName,
         Integer conversations,
         String lastActivity) {
 }

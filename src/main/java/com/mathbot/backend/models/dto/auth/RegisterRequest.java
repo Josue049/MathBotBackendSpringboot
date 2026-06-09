@@ -13,6 +13,7 @@ public record RegisterRequest(
                 String institution,
                 String role,
                 Long teacherId,
+                Long classroomId,
                 @NotBlank @Email String correo,
                 String telefono,
                 @NotBlank String usuario,

@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoleAndInstitutionIgnoreCaseOrderByNombreAsc(Role role, String institution);
 
     List<User> findByTeacherIdOrderByNombreAsc(Long teacherId);
+
+    List<User> findByClassroomIdOrderByNombreAsc(Long classroomId);
+
+    List<User> findByRoleAndSchoolIdOrderByNombreAsc(Role role, Long schoolId);
 }
